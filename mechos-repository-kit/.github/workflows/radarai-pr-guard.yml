@@ -1,0 +1,26 @@
+name: RadarAI pull-request guard
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  validate:
+    if: github.event.pull_request.user.login == 'copilot-swe-agent[bot]' || contains(github.event.pull_request.title, 'RadarAI')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require MechOS validation entrypoint
+        run: |
+          test -f ./ci/validate-hotfix.sh
+          bash ./ci/validate-hotfix.sh
+      - name: Explain release boundary
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh label create monthly-hotfix --repo "$REPO" --color 7C3AED --description "Candidate for a monthly MechOS update" --force
+          gh pr edit "$PR" --repo "$REPO" --add-label monthly-hotfix
+          gh pr comment "$PR" --repo "$REPO" --body "RadarAI guard passed. Human review and merge are still required before this can enter a monthly MechOS update."
