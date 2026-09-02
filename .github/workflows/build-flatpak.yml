@@ -1,0 +1,18 @@
+name: Build RadarAI Flatpak
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+jobs:
+  flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: RadarAI.flatpak
+          manifest-path: io.mechgod.RadarAI.yml
+          cache-key: flatpak-builder-${{ github.sha }}
