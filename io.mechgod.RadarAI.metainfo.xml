@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.mechgod.RadarAI</id>
+  <name>RadarAI</name>
+  <summary>Find Linux system and hardware problems</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <description><p>RadarAI performs privacy-conscious system health scans, explains findings, saves reports locally, and optionally submits reviewed reports to GitHub.</p></description>
+  <launchable type="desktop-id">io.mechgod.RadarAI.desktop</launchable>
+  <releases>
+    <release version="0.2.0" date="2026-08-30"><description><p>Adds reviewed MechOS source reports, diagnostic fingerprints, and optional Copilot cloud-agent pull requests.</p></description></release>
+    <release version="0.1.1" date="2026-08-30"><description><p>Requests safe read-only diagnostic access during installation.</p></description></release>
+    <release version="0.1.0" date="2026-08-30"/>
+  </releases>
+</component>
