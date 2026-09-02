@@ -1,0 +1,22 @@
+name: Monthly MechOS hotfix queue
+on:
+  schedule:
+    - cron: '17 6 1 * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  queue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create monthly release checklist
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          month="$(date -u +%Y-%m)"
+          merged="$(gh pr list --repo "$REPO" --state merged --search 'label:monthly-hotfix merged:>=@today-31d' --json number,title,url --jq '.[] | "- [ ] #\(.number) \(.title) — \(.url)"')"
+          if [ -z "$merged" ]; then merged='- [ ] No merged RadarAI hotfixes found; verify before closing.'; fi
+          body="## MechOS monthly hotfix review — ${month}\n\n${merged}\n\n## Required gates\n- [ ] Full image build passed\n- [ ] Upgrade test passed\n- [ ] Rollback test passed\n- [ ] Release signatures verified\n- [ ] Human release approval recorded"
+          gh issue create --repo "$REPO" --title "MechOS monthly hotfix review — ${month}" --body "$body" --label monthly-hotfix
