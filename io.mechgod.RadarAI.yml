@@ -1,0 +1,26 @@
+app-id: io.mechgod.RadarAI
+runtime: org.gnome.Platform
+runtime-version: '48'
+sdk: org.gnome.Sdk
+command: radarai
+finish-args:
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  # Read-only OS metadata and hardware telemetry. No home-folder or write access.
+  - --filesystem=host-os:ro
+  - --filesystem=host-etc:ro
+  - --filesystem=/sys:ro
+  - --talk-name=org.freedesktop.Notifications
+modules:
+  - name: radarai
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 radarai.py /app/bin/radarai
+      - install -Dm644 io.mechgod.RadarAI.desktop /app/share/applications/io.mechgod.RadarAI.desktop
+      - install -Dm644 io.mechgod.RadarAI.metainfo.xml /app/share/metainfo/io.mechgod.RadarAI.metainfo.xml
+      - install -Dm644 io.mechgod.RadarAI.svg /app/share/icons/hicolor/scalable/apps/io.mechgod.RadarAI.svg
+    sources:
+      - type: dir
+        path: .
