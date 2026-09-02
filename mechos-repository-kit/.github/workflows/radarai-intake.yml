@@ -1,0 +1,21 @@
+name: RadarAI intake
+on:
+  issues:
+    types: [opened, reopened]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  classify:
+    if: startsWith(github.event.issue.title, '[RadarAI:')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark reviewed diagnostic queue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh label create radarai --repo "$REPO" --color 0EA5E9 --description "Submitted by RadarAI" --force
+          gh label create monthly-hotfix --repo "$REPO" --color 7C3AED --description "Candidate for a monthly MechOS update" --force
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label radarai
